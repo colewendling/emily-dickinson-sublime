@@ -2,15 +2,79 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { Poem, poems, getRelatedPairs } from '../data/poems';
+import { Poem, poems } from '../data/poems';
 import PoemModal from './PoemModal';
 import { FontLoader } from 'three-stdlib';
 import { TextGeometry } from 'three-stdlib';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
+import { positions } from '../data/positions';
+import { poemColors } from '../data/colors';
+import { poemConnections } from '../data/connections';
+
+// ==========================
+// 🚀 Control Properties
+// ==========================
+
+// Multipliers for positioning and node sizing
+const POSITION_MULTIPLIER = 30000; // Adjust this value as needed
+const NODE_SIZE_MULTIPLIER = 200; // Adjust this value as needed
+
+// Text size for poem labels
+const TEXT_SIZE = 10; // Adjust this value as needed
+
+// Initial camera position and zoom level
+const CAMERA_POSITION = {
+  x: -140,
+  y: 731,
+  z: 1682, // Adjust z for zoom level
+};
+
+// Axis colors and opacity
+const AXIS_COLORS = {
+  X: '#FF0000', // Red
+  Y: '#00FF00', // Green
+  Z: '#0000FF', // Blue
+};
+const AXIS_OPACITY = 0.2; // Adjust this value as needed
+
+// Light intensity settings
+const AMBIENT_LIGHT_INTENSITY = 0.5; // Ambient light brightness
+const DIRECTIONAL_LIGHT_INTENSITY = 0.7; // Directional light brightness
+
+// ==========================
+// 🎨 PoemGraph2 Component
+// ==========================
+
 const PoemGraph: React.FC = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const [selectedPoem, setSelectedPoem] = useState<Poem | null>(null);
+
+  // State to hold camera position
+  const [cameraPosition, setCameraPosition] = useState<{
+    x: number;
+    y: number;
+    z: number;
+  }>({
+    x: CAMERA_POSITION.x,
+    y: CAMERA_POSITION.y,
+    z: CAMERA_POSITION.z,
+  });
+
+  // Helper: Convert the connections object to an array of [source, target] pairs
+  function getRelatedPairs(): [number, number][] {
+    const pairs: [number, number][] = [];
+    for (const sourceStr in poemConnections) {
+      const source = parseInt(sourceStr, 10);
+      poemConnections[source].forEach((target) => {
+        // Avoid duplicating pairs if connections are bidirectional
+        if (source < target) {
+          pairs.push([source, target]);
+        }
+      });
+    }
+    return pairs;
+  }
 
   useEffect(() => {
     if (!mountRef.current) return;
@@ -21,7 +85,7 @@ const PoemGraph: React.FC = () => {
       75,
       mountRef.current.clientWidth / mountRef.current.clientHeight,
       0.1,
-      1000
+      1000000 // Increased far plane to accommodate larger scene
     );
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -33,9 +97,15 @@ const PoemGraph: React.FC = () => {
     mountRef.current.appendChild(renderer.domElement);
 
     // Add lighting for shading
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.7);
-    directionalLight.position.set(10, 10, 10);
+    const ambientLight = new THREE.AmbientLight(
+      0xffffff,
+      AMBIENT_LIGHT_INTENSITY
+    );
+    const directionalLight = new THREE.DirectionalLight(
+      0xffffff,
+      DIRECTIONAL_LIGHT_INTENSITY
+    );
+    directionalLight.position.set(10000, 10000, 10000); // Scaled light position
     scene.add(ambientLight, directionalLight);
 
     // Raycaster for interaction
@@ -71,11 +141,15 @@ const PoemGraph: React.FC = () => {
       });
 
       // Determine the bounding box to center the cloud
-      const positions = poems.map(
-        (poem) =>
-          new THREE.Vector3(poem.position.x, poem.position.y, poem.position.z)
-      );
-      const boundingBox = new THREE.Box3().setFromPoints(positions);
+      const positionsArr = poems.map((poem) => {
+        const { x, y, z } = positions[poem.id];
+        return new THREE.Vector3(
+          x * POSITION_MULTIPLIER,
+          y * POSITION_MULTIPLIER,
+          z * POSITION_MULTIPLIER
+        );
+      });
+      const boundingBox = new THREE.Box3().setFromPoints(positionsArr);
       const center = boundingBox.getCenter(new THREE.Vector3());
       scene.position.sub(center); // Center the scene
 
@@ -83,36 +157,49 @@ const PoemGraph: React.FC = () => {
       const relatedPairs = getRelatedPairs();
 
       poems.forEach((poem) => {
+        const nodeColorHex = poemColors[poem.id] || '#FFFFFF'; // Default to white if undefined
         const nodeMaterial = new THREE.MeshStandardMaterial({
-          color: poem.color,
+          color: new THREE.Color(nodeColorHex),
         });
 
-        // Dynamic node size based on connections
-        const connectionCount = connectionsCount[poem.number] || 1;
-        const nodeSize = 0.01 + connectionCount * 0.01; // Adjust scaling as needed
+        // Dynamic node size based on number of connections
+        const connectionCount = connectionsCount[poem.id] || 1;
+        const nodeSize = (0.01 + connectionCount * 0.01) * NODE_SIZE_MULTIPLIER; // Scaled node size
 
         const nodeGeometry = new THREE.SphereGeometry(nodeSize, 32, 32);
         const node = new THREE.Mesh(nodeGeometry, nodeMaterial);
-        node.position.set(poem.position.x, poem.position.y, poem.position.z);
+
+        // Use the positions file for coordinates with multiplier
+        const { x, y, z } = positions[poem.id];
+        node.position.set(
+          x * POSITION_MULTIPLIER,
+          y * POSITION_MULTIPLIER,
+          z * POSITION_MULTIPLIER
+        );
         node.userData = { poem };
         scene.add(node);
 
-        // Add text above each node
-        const textGeometry = new TextGeometry(poem.content[0], {
+        // Use the first line of the first stanza for label text
+        const firstLine =
+          Array.isArray(poem.stanzas[0]) && poem.stanzas[0].length > 0
+            ? poem.stanzas[0][0]
+            : 'Untitled Poem';
+
+        const textGeometry = new TextGeometry(firstLine, {
           font: font,
-          size: 0.1, // Smaller title font size
-          height: 0.005,
+          size: TEXT_SIZE, // Scaled text size
+          height: 0.3,
         });
         const textMaterial = new THREE.MeshBasicMaterial({
-          color: poem.color, // Title text matches node color
+          color: new THREE.Color(nodeColorHex), // Title text matches node color
           transparent: true,
           opacity: 0.8,
         });
         const text = new THREE.Mesh(textGeometry, textMaterial);
         text.position.set(
-          poem.position.x,
-          poem.position.y + nodeSize + 0.1,
-          poem.position.z
+          x * POSITION_MULTIPLIER,
+          y * POSITION_MULTIPLIER + nodeSize + 10, // Scaled label position
+          z * POSITION_MULTIPLIER
         );
         text.userData = { isText: true };
         scene.add(text);
@@ -120,12 +207,15 @@ const PoemGraph: React.FC = () => {
 
       // Add connections with more transparent lines
       relatedPairs.forEach(([source, target]) => {
-        const sourceNode = poems.find((poem) => poem.number === source);
-        const targetNode = poems.find((poem) => poem.number === target);
+        const sourceNode = poems.find((poem) => poem.id === source);
+        const targetNode = poems.find((poem) => poem.id === target);
 
         if (sourceNode && targetNode) {
-          const mixedColor = new THREE.Color(sourceNode.color)
-            .lerp(new THREE.Color(targetNode.color), 0.5)
+          const sourceColorHex = poemColors[sourceNode.id] || '#FFFFFF';
+          const targetColorHex = poemColors[targetNode.id] || '#FFFFFF';
+
+          const mixedColor = new THREE.Color(sourceColorHex)
+            .lerp(new THREE.Color(targetColorHex), 0.5)
             .getHex();
 
           const lineMaterial = new THREE.LineBasicMaterial({
@@ -135,14 +225,14 @@ const PoemGraph: React.FC = () => {
           });
           const points = [
             new THREE.Vector3(
-              sourceNode.position.x,
-              sourceNode.position.y,
-              sourceNode.position.z
+              positions[sourceNode.id].x * POSITION_MULTIPLIER,
+              positions[sourceNode.id].y * POSITION_MULTIPLIER,
+              positions[sourceNode.id].z * POSITION_MULTIPLIER
             ),
             new THREE.Vector3(
-              targetNode.position.x,
-              targetNode.position.y,
-              targetNode.position.z
+              positions[targetNode.id].x * POSITION_MULTIPLIER,
+              positions[targetNode.id].y * POSITION_MULTIPLIER,
+              positions[targetNode.id].z * POSITION_MULTIPLIER
             ),
           ];
           const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
@@ -154,14 +244,19 @@ const PoemGraph: React.FC = () => {
       // Add axis labels
       const addAxis = (
         length: number,
-        color: number,
+        color: string,
         label: string,
-        position: THREE.Vector3
+        direction: THREE.Vector3
       ) => {
-        const material = new THREE.LineBasicMaterial({ color: 0xffffff/50 }); // White axes
+        const axisColor = new THREE.Color(color);
+        const material = new THREE.LineBasicMaterial({
+          color: axisColor,
+          transparent: true,
+          opacity: AXIS_OPACITY,
+        });
         const points = [
           new THREE.Vector3(0, 0, 0),
-          position.clone().setLength(length),
+          direction.clone().setLength(length * POSITION_MULTIPLIER),
         ];
         const geometry = new THREE.BufferGeometry().setFromPoints(points);
         const axis = new THREE.Line(geometry, material);
@@ -170,23 +265,25 @@ const PoemGraph: React.FC = () => {
         // Add label
         const labelGeometry = new TextGeometry(label, {
           font: font,
-          size: 0.1, // Smaller axis label font size
-          height: 0.005,
+          size: TEXT_SIZE * 0.5, // Scaled label size
+          height: 0.2,
         });
         const labelMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff }); // White label color
         const labelMesh = new THREE.Mesh(labelGeometry, labelMaterial);
-        labelMesh.position.copy(position.clone().setLength(length + 0.3));
-        labelMesh.lookAt(camera.position); // Initially face the camera
+        labelMesh.position.copy(
+          direction.clone().setLength(length * POSITION_MULTIPLIER + 100) // Scaled label position
+        );
+        labelMesh.lookAt(camera.position); // Face the camera
         labelMesh.userData = { isLabel: true };
         scene.add(labelMesh);
       };
 
-      // X-axis
-      addAxis(10, 0xffffff, 'X', new THREE.Vector3(1, 0, 0));
-      // Y-axis
-      addAxis(10, 0xffffff, 'Y', new THREE.Vector3(0, 1, 0));
-      // Z-axis
-      addAxis(10, 0xffffff, 'Z', new THREE.Vector3(0, 0, 1));
+      // X-axis (Red)
+      addAxis(10, AXIS_COLORS.X, 'X', new THREE.Vector3(1, 0, 0));
+      // Y-axis (Green)
+      addAxis(10, AXIS_COLORS.Y, 'Y', new THREE.Vector3(0, 1, 0));
+      // Z-axis (Blue)
+      addAxis(10, AXIS_COLORS.Z, 'Z', new THREE.Vector3(0, 0, 1));
     });
 
     // Rotation, zoom, and pan controls using OrbitControls
@@ -195,8 +292,23 @@ const PoemGraph: React.FC = () => {
     controls.dampingFactor = 0.05;
     controls.enablePan = true; // Enable panning
 
-    camera.position.set(0, 0, 30); // Adjusted for better initial view
+    camera.position.set(
+      CAMERA_POSITION.x,
+      CAMERA_POSITION.y,
+      CAMERA_POSITION.z
+    ); // Set initial camera position
     controls.update();
+
+    // Listen to camera movement and update state
+    const updateCameraPosition = () => {
+      setCameraPosition({
+        x: Math.round(camera.position.x),
+        y: Math.round(camera.position.y),
+        z: Math.round(camera.position.z),
+      });
+    };
+
+    controls.addEventListener('change', updateCameraPosition);
 
     // Handle window resize
     const handleResize = () => {
@@ -231,6 +343,7 @@ const PoemGraph: React.FC = () => {
     return () => {
       window.removeEventListener('click', handleMouseClick);
       window.removeEventListener('resize', handleResize);
+      controls.removeEventListener('change', updateCameraPosition);
 
       if (
         mountRef.current &&
@@ -245,6 +358,16 @@ const PoemGraph: React.FC = () => {
 
   return (
     <div ref={mountRef} className="w-full h-full relative">
+      {/* Camera Position Display */}
+      <div
+        className="absolute top-2 right-2 bg-black bg-opacity-90 text-white text-lg p-2 rounded"
+        style={{ opacity: 0.5 }}
+      >
+        <div>x: {cameraPosition.x}</div>
+        <div>y: {cameraPosition.y}</div>
+        <div>z: {cameraPosition.z}</div>
+      </div>
+
       {selectedPoem && (
         <PoemModal poem={selectedPoem} onClose={() => setSelectedPoem(null)} />
       )}

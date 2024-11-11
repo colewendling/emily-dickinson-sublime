@@ -25,9 +25,9 @@ const TEXT_SIZE = 10; // Adjust this value as needed
 
 // Initial camera position and zoom level
 const CAMERA_POSITION = {
-  x: -140,
-  y: 731,
-  z: 1682, // Adjust z for zoom level
+  x: -927,
+  y: 87,
+  z: 1952, // Adjust z for zoom level
 };
 
 // Axis colors and opacity

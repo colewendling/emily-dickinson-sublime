@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Poem } from '../data/poems';
 import { X } from 'lucide-react';
 import { poemThemes } from '../data/themes'; // Importing themes
@@ -36,39 +36,12 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
   const poemBodyRef = useRef<HTMLDivElement>(null);
 
   // Retrieve themes and motifs based on poem.id
-  const themes: string[] = poemThemes[poem.id] || [];
-  const motifs: string[] = poemMotifs[poem.id] || [];
-
+  const themes = useMemo(() => poemThemes[poem.id] || [], [poem.id]);
+  const motifs = useMemo(() => poemMotifs[poem.id] || [], [poem.id]);
   // Convert themes and motifs arrays to strings separated by commas
-  const themeString = themes.join(', ');
-  const motifString = motifs.join(', ');
+  const themeString = useMemo(() => themes.join(', ').trim(), [themes]);
+  const motifString = useMemo(() => motifs.join(', ').trim(), [motifs]);
 
-  /**
-   * Function to determine if a word should be emphasized
-   * and return the appropriate React node.
-   */
-  // const highlightWord = (
-  //   word: string,
-  //   lineIndex: number,
-  //   wordIndex: number
-  // ): React.ReactNode => {
-  //   const trimmed = word.replace(/[^a-zA-Z]/g, '').toLowerCase();
-  //   if (themes.includes(trimmed)) {
-  //     return (
-  //       <span
-  //         className="text-red-600 inline-block animate-jitter"
-  //         key={`word-${lineIndex}-${wordIndex}`}
-  //       >
-  //         {word + ' '}
-  //       </span>
-  //     );
-  //   }
-  //   return word + ' ';
-  // };
-
-  /**
-   * Effect to handle overflow detection for scroll indicator
-   */
   useEffect(() => {
     const checkOverflow = () => {
       const el = poemBodyRef.current;
@@ -83,7 +56,7 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
     const handleScroll = () => {
       const el = poemBodyRef.current;
       if (el) {
-        setShowIndicator(el.scrollTop === 0); // Only show if at the top
+        setShowIndicator(el.scrollTop === 0);
       }
     };
 
@@ -96,9 +69,6 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
     };
   }, []);
 
-  /**
-   * Effect to handle typing of the poem
-   */
   useEffect(() => {
     let currentStanzaIndex = 0;
     let currentLineIndex = 0;
@@ -109,7 +79,6 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
 
     const typePoem = () => {
       if (currentStanzaIndex >= totalStanzas) {
-        // Poem typing complete
         setIsPoemComplete(true);
         return;
       }
@@ -120,7 +89,6 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
 
       const typeLine = () => {
         if (currentLineIndex >= totalLines) {
-          // Move to next stanza
           currentStanzaIndex++;
           currentLineIndex = 0;
           setTypedPoem((prev) => [
@@ -140,8 +108,6 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
           if (wordCount < totalWords) {
             const rawWord = words[wordCount];
             const cleanedWord = rawWord.replace(/[^\w'-]/g, '');
-
-            // Check if this word should be emphasized
             const emphasis = poem.emphases.find(
               (e) =>
                 e.stanzaIndex === currentStanzaIndex &&
@@ -215,7 +181,7 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
     const totalChars = themeString.length;
     const interval = setInterval(() => {
       if (index < totalChars) {
-        setTypedThemes((prev) => prev + themeString.charAt(index));
+        setTypedThemes((prev) => prev + themeString.charAt(index - 1));
         index++;
       } else {
         clearInterval(interval);
@@ -228,15 +194,12 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
     };
   }, [themeString, typingSpeedThemes]);
 
-  /**
-   * Effect to handle typing of motifs
-   */
   useEffect(() => {
     let index = 0;
     const totalChars = motifString.length;
     const interval = setInterval(() => {
       if (index < totalChars) {
-        setTypedMotifs((prev) => prev + motifString.charAt(index));
+        setTypedMotifs((prev) => prev + motifString.charAt(index - 1));
         index++;
       } else {
         clearInterval(interval);
@@ -249,10 +212,9 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
     };
   }, [motifString, typingSpeedMotifs]);
 
-  // Determine the title of the poem
   const title = Array.isArray(poem.stanzas[0])
-    ? poem.stanzas[0][0] || 'Untitled' // First line of the first stanza
-    : poem.stanzas[0] || 'Untitled'; // Handle flat array case
+    ? poem.stanzas[0][0] || 'Untitled'
+    : poem.stanzas[0] || 'Untitled';
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-8">
@@ -267,7 +229,7 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
 
         {/* Poem Number and Title with animate-jitter */}
         <h2 className="text-xs mb-4 text-white">No. {poem.id}</h2>
-        <h2 className="text-xl text-lime-400 animate-float">{title}</h2>
+        <h2 className="text-xl text-lime-400">{title}</h2>
 
         {/* Separator */}
         <div className="h-px my-6 bg-slate-300/50" />

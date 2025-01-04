@@ -13,9 +13,9 @@ interface PoemModalProps {
 
 const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
   // Control typing speeds (in milliseconds)
-  const typingSpeedPoem = 180;
-  const typingSpeedThemes = 200; // Faster for character-by-character
-  const typingSpeedMotifs = 200; // Faster for character-by-character
+  const typingSpeedPoem = 100;
+  const typingSpeedThemes = 100; // Faster for character-by-character
+  const typingSpeedMotifs = 100; // Faster for character-by-character
 
   // State for typed poem with possible emphasis
   const [typedPoem, setTypedPoem] = useState<React.ReactNode[]>([]);

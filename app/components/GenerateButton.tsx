@@ -46,9 +46,11 @@ export default function GenerateButton({ type }: GenerateButtonProps) {
       const result = await action();
       console.log(`${label} Result:`, result);
       setMessage(`${label} completed successfully!`);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      // Safely extract a message from an unknown error
+      const errorMessage = err instanceof Error ? err.message : String(err);
       console.error(`${label} Error:`, err);
-      setMessage(`Error: ${err.message || 'Something went wrong.'}`);
+      setMessage(`Error: ${errorMessage || 'Something went wrong.'}`);
     } finally {
       setLoading(false);
     }

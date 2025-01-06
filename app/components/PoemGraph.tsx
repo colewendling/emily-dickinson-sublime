@@ -6,8 +6,7 @@ import { Poem, poems } from '../data/poems';
 import PoemModal from './PoemModal';
 import { FontLoader } from 'three-stdlib';
 import { TextGeometry } from 'three-stdlib';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-
+import { OrbitControls } from 'three-stdlib';
 import { positions } from '../data/positions';
 import { poemColors } from '../data/colors';
 import { poemConnections } from '../data/connections';

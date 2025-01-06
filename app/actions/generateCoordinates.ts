@@ -47,7 +47,7 @@ async function readPositions(): Promise<Record<number, Position>> {
     const fileContent = await fs.readFile(positionsFilePath, 'utf-8');
     // Extract the positions object
     const match = fileContent.match(
-      /export const positions: Record<number, Position> = (.*);/s
+      /export const positions: Record<number, Position> = ([\s\S]*);/
     );
     if (match && match[1]) {
       // eslint-disable-next-line @typescript-eslint/no-var-requires

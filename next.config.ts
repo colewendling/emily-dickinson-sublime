@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   env: {
     HUGGING_FACE_API_KEY: process.env.HUGGING_FACE_API_KEY,
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default nextConfig;

@@ -43,23 +43,24 @@ const PoemsTable: React.FC = () => {
 
   return (
     <div>
-      <table className="min-w-full border-collapse">
+      <div className="overflow-x-auto px-2 sm:px-4">
+        <table className="w-full table-fixed border-collapse whitespace-normal text-sm sm:text-base">
         <thead>
           <tr>
-            <th className="border border-white px-4 py-2 text-pink-500">ID</th>
-            <th className="border border-white px-4 py-2 text-pink-500">
+            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">ID</th>
+            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Poem
             </th>
-            <th className="border border-white px-4 py-2 text-pink-500">
+            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Date
             </th>
-            <th className="border border-white px-4 py-2 text-pink-500">
+            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Stanzas
             </th>
-            <th className="border border-white px-4 py-2 text-pink-500">
+            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Lines
             </th>
-            <th className="border border-white px-4 py-2 text-pink-500">
+            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Emphases
             </th>
           </tr>
@@ -81,21 +82,22 @@ const PoemsTable: React.FC = () => {
                 className="border border-white cursor-pointer hover:bg-pink-900/30"
                 onClick={() => handleRowClick(poem)}
               >
-                <td className="border border-white px-4 py-2">{poem.id}</td>
-                <td className="border border-white px-4 py-2">{firstLine}</td>
-                <td className="border border-white px-4 py-2">{poem.date}</td>
-                <td className="border border-white px-4 py-2">
+                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">{poem.id}</td>
+                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">{firstLine}</td>
+                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">{poem.date}</td>
+                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">
                   {stanzasCount}
                 </td>
-                <td className="border border-white px-4 py-2">{totalLines}</td>
-                <td className="border border-white px-4 py-2">
+                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">{totalLines}</td>
+                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">
                   {emphasesCount}
                 </td>
               </tr>
             );
           })}
         </tbody>
-      </table>
+        </table>
+      </div>
 
       {/* Pagination Component */}
       <Pagination

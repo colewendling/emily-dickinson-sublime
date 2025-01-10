@@ -38,14 +38,14 @@ export default function Home() {
       </div>
 
       {/* Dev Tools Section */}
-      <section className="p-4 border border-gray-700 rounded">
+      {/* <section className="p-4 border border-gray-700 rounded">
         <h3 className="text-xl font-semibold mb-4 text-subheader">Dev Tools</h3>
         <div className="flex gap-4">
           <GenerateButton type="colors" />
           <GenerateButton type="connections" />
           <GenerateButton type="coordinates" />
         </div>
-      </section>
+      </section> */}
 
       {/* Poem Graph Section */}
       <section className="p-4 border border-gray-700 rounded">
@@ -56,7 +56,7 @@ export default function Home() {
           2) Give this a fixed/min height to allow the Three.js canvas
              to expand properly. For instance, 600px or whatever works best.
         */}
-        <div className="h-[600px]">
+        <div className="h-[350px] sm:h-[600px]">
           <PoemGraph />
         </div>
       </section>

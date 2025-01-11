@@ -177,38 +177,40 @@ const PoemModal: React.FC<PoemModalProps> = ({ poem, onClose }) => {
    * Effect to handle typing of themes
    */
   useEffect(() => {
-    let index = 0;
-    const totalChars = themeString.length;
-    const interval = setInterval(() => {
-      if (index < totalChars) {
-        setTypedThemes((prev) => prev + themeString.charAt(index - 1));
-        index++;
-      } else {
-        clearInterval(interval);
-        setIsThemesComplete(true);
-      }
-    }, typingSpeedThemes);
-
+    setTypedThemes('');
+    setIsThemesComplete(false);
+    const timers: number[] = [];
+    for (let i = 0; i < themeString.length; i++) {
+      timers.push(
+        window.setTimeout(() => {
+          setTypedThemes(themeString.substring(0, i + 1));
+          if (i + 1 === themeString.length) {
+            setIsThemesComplete(true);
+          }
+        }, i * typingSpeedThemes)
+      );
+    }
     return () => {
-      clearInterval(interval);
+      timers.forEach(window.clearTimeout);
     };
   }, [themeString, typingSpeedThemes]);
 
   useEffect(() => {
-    let index = 0;
-    const totalChars = motifString.length;
-    const interval = setInterval(() => {
-      if (index < totalChars) {
-        setTypedMotifs((prev) => prev + motifString.charAt(index - 1));
-        index++;
-      } else {
-        clearInterval(interval);
-        setIsTypingComplete(true);
-      }
-    }, typingSpeedMotifs);
-
+    setTypedMotifs('');
+    setIsTypingComplete(false);
+    const timers: number[] = [];
+    for (let i = 0; i < motifString.length; i++) {
+      timers.push(
+        window.setTimeout(() => {
+          setTypedMotifs(motifString.substring(0, i + 1));
+          if (i + 1 === motifString.length) {
+            setIsTypingComplete(true);
+          }
+        }, i * typingSpeedMotifs)
+      );
+    }
     return () => {
-      clearInterval(interval);
+      timers.forEach(window.clearTimeout);
     };
   }, [motifString, typingSpeedMotifs]);
 

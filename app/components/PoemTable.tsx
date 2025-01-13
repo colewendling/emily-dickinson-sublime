@@ -43,8 +43,8 @@ const PoemsTable: React.FC = () => {
 
   return (
     <div>
-      <div className="overflow-x-auto px-2 sm:px-4">
-        <table className="w-full table-fixed border-collapse whitespace-normal text-sm sm:text-base">
+      <div className="w-full overflow-x-auto px-2 sm:px-4">
+        <table className="w-full max-w-full table-auto border-collapse whitespace-normal text-xs sm:text-base">
         <thead>
           <tr>
             <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">ID</th>
@@ -60,7 +60,7 @@ const PoemsTable: React.FC = () => {
             <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Lines
             </th>
-            <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
+            <th className="hidden sm:table-cell border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">
               Emphases
             </th>
           </tr>
@@ -89,7 +89,7 @@ const PoemsTable: React.FC = () => {
                   {stanzasCount}
                 </td>
                 <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">{totalLines}</td>
-                <td className="border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">
+                <td className="hidden sm:table-cell border border-white px-2 py-1 sm:px-4 sm:py-2 break-words">
                   {emphasesCount}
                 </td>
               </tr>

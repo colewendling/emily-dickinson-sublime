@@ -16,11 +16,6 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <main className="w-full flex-1">
             <div className="mx-auto max-w-screen-xl px-4 py-8">{children}</div>
           </main>
-          <footer className="w-full bg-black text-center py-6 mt-6">
-            <p className="text-sm text-gray-400">
-              &copy; 2024 The Dickinson Sublime
-            </p>
-          </footer>
         </div>
       </body>
     </html>

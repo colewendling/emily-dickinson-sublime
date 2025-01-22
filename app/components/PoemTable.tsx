@@ -44,7 +44,7 @@ const PoemsTable: React.FC = () => {
   return (
     <div>
       <div className="w-full overflow-x-auto px-2 sm:px-4">
-        <table className="w-full max-w-full table-auto border-collapse whitespace-normal text-xs sm:text-base">
+        <table className="w-full max-w-[400px] sm:max-w-full mx-auto table-auto border-collapse whitespace-normal text-xs sm:text-base">
         <thead>
           <tr>
             <th className="border border-white px-2 py-1 sm:px-4 sm:py-2 text-pink-500">ID</th>

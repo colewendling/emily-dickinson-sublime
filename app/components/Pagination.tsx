@@ -32,13 +32,14 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => handleClick(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-3 py-1 rounded ${
+        className={`px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-base rounded ${
           currentPage === 1
             ? 'bg-gray-300 cursor-not-allowed'
             : 'bg-pink-500 text-white hover:bg-pink-600'
         }`}
       >
-        Previous
+        <span className="hidden sm:inline">Previous</span>
+        <span className="inline sm:hidden">&lt;</span>
       </button>
 
       {/* Page Numbers */}
@@ -46,7 +47,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           key={number}
           onClick={() => handleClick(number)}
-          className={`px-3 py-1 rounded ${
+          className={`px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-base rounded ${
             number === currentPage
               ? 'bg-pink-800 text-white'
               : 'bg-pink-500 text-white hover:bg-pink-600'
@@ -60,13 +61,14 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => handleClick(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-3 py-1 rounded ${
+        className={`px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-base rounded ${
           currentPage === totalPages
             ? 'bg-gray-300 cursor-not-allowed'
             : 'bg-pink-500 text-white hover:bg-pink-600'
         }`}
       >
-        Next
+        <span className="hidden sm:inline">Next</span>
+        <span className="inline sm:hidden">&gt;</span>
       </button>
     </div>
   );

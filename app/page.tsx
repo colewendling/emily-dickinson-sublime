@@ -4,7 +4,7 @@
 import Footer from './components/Footer';
 import PoemTable from './components/PoemTable';
 import PoemGraph from './components/PoemGraph';
-import GenerateButton from './components/GenerateButton';
+// import GenerateButton from './components/GenerateButton';
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
       </section>
       {/* Sections 1 and 2: Responsive row/column */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <section className="p-4 border border-gray-700 rounded">
+        <section className="p-5 border border-gray-700 rounded">
           <h3 className="text-xl font-semibold mb-2 text-subheader">1735</h3>
           <p className="text-gray-300">
             After her death in 1865, 1735 poems were discovered in Emily
@@ -27,7 +27,7 @@ export default function Home() {
             of eternity and took a step.
           </p>
         </section>
-        <section className="p-4 border border-gray-700 rounded">
+        <section className="p-5 border border-gray-700 rounded">
           <h3 className="text-xl font-semibold mb-2 text-subheader">
             Sublime Threads
           </h3>
@@ -40,7 +40,7 @@ export default function Home() {
       </div>
 
       {/* How It Works Section */}
-      <section className="p-4 border border-gray-700 rounded">
+      <section className="p-5 border border-gray-700 rounded">
         <h3 className="text-xl font-semibold mb-4 text-subheader">How It Works</h3>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Position Icon */}

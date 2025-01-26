@@ -27,14 +27,14 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-center items-center mt-4 space-x-2">
+    <div className="w-full max-w-[400px] sm:max-w-full mx-auto flex justify-center items-center mt-4 space-x-2 py-2">
       {/* Previous Button */}
       <button
         onClick={() => handleClick(currentPage - 1)}
         disabled={currentPage === 1}
         className={`px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-base rounded ${
           currentPage === 1
-            ? 'bg-gray-300 cursor-not-allowed'
+            ? 'bg-gray-400 cursor-not-allowed'
             : 'bg-pink-500 text-white hover:bg-pink-600'
         }`}
       >

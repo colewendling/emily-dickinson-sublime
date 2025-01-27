@@ -42,10 +42,10 @@ export default function Home() {
       {/* How It Works Section */}
       <section className="p-5 border border-gray-700 rounded">
         <h3 className="text-xl font-semibold mb-4 text-subheader">How It Works</h3>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Position Icon */}
           <div className="flex flex-col items-start">
-            <svg className="w-8 h-8 my-3 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <svg className="w-8 h-8 my-6 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <line className="animate-horizontal" x1="0" y1="12" x2="24" y2="12" strokeWidth="2"/>
               <line className="animate-vertical" x1="12" y1="0" x2="12" y2="24" strokeWidth="2"/>
             </svg>
@@ -56,7 +56,7 @@ export default function Home() {
           </div>
           {/* Color Icon */}
           <div className="flex flex-col items-start">
-            <div className="w-8 h-8 rounded-full my-3 opacity-50 animate-color"></div>
+            <div className="w-8 h-8 rounded-full my-6 opacity-50 animate-color"></div>
             <h4 className="text-lg font-medium text-subheader">Color</h4>
             <p className="text-gray-300 text-base opacity-80 max-w-prose py-2">
               A poem’s color is chosen by normalizing its x-coordinate within the embedding space to a predefined palette, so semantically similar poems share similar hues, with slight deterministic variation for clarity.
@@ -64,7 +64,7 @@ export default function Home() {
           </div>
           {/* Connections Icon */}
           <div className="flex flex-col items-start">
-            <svg className="w-8 h-8 my-3 opacity-50 animate-connections" viewBox="0 0 24 4" fill="none" stroke="currentColor" strokeDasharray="4">
+            <svg className="w-8 h-8 my-6 opacity-50 animate-connections" viewBox="0 0 24 4" fill="none" stroke="currentColor" strokeDasharray="4">
               <line x1="0" y1="2" x2="24" y2="2" strokeWidth="2"/>
             </svg>
             <h4 className="text-lg font-medium text-subheader">Connections</h4>
@@ -74,7 +74,7 @@ export default function Home() {
           </div>
           {/* Size Icon */}
           <div className="flex flex-col items-start">
-            <div className="w-8 h-8 rounded-full my-3 opacity-50 animate-size border border-current"></div>
+            <div className="w-8 h-8 rounded-full my-6 opacity-50 animate-size border border-current"></div>
             <h4 className="text-lg font-medium text-subheader">Size</h4>
             <p className="text-gray-300 text-base opacity-80 max-w-prose py-2">
               The size of each node reflects its total number of connections—poems with more related neighbors appear larger to emphasize their centrality in the network.

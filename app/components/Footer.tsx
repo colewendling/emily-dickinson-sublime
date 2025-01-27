@@ -3,7 +3,7 @@ import { Mail, Github, Linkedin, FileText, Globe } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="w-full text-white py-20 mt-12">
+    <footer className="w-full text-white py-20 mt-2">
       <div className="max-w-screen-xl mx-auto px-4 flex flex-col md:flex-row justify-evenly items-center md:items-start gap-12 py-4 md:gap-6">
 
         {/* Contact Info */}

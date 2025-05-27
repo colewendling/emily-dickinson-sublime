@@ -38,7 +38,7 @@ const Footer = () => {
             <a href="https://wendling.io/" className="flex items-center justify-center bg-white p-1 rounded-full hover:bg-slate-300 shadow-md shadow-black/50 w-8 h-8">
               <Globe className="w-5 h-5 text-slate-600" />
             </a>
-            <a href="https://wendling.io/Resume" className="flex items-center justify-center bg-white p-1 rounded-full hover:bg-slate-300 shadow-md shadow-black/50 w-8 h-8">
+            <a href="https://wendling.io/resume" className="flex items-center justify-center bg-white p-1 rounded-full hover:bg-slate-300 shadow-md shadow-black/50 w-8 h-8">
               <FileText className="w-5 h-5 text-slate-600" />
             </a>
           </div>
